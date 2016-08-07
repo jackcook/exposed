@@ -3,5 +3,8 @@
 
 *.db
 *.htm
+*.html
 *.csv
 *.tsv
+
+!result.html

@@ -48,7 +48,7 @@ var calendar_color = d3.scale.quantize()
     .range(d3.range(4).map(function(d) { return "q" + d + "-4"; }));
 
 var svg = d3.select("body").selectAll("svg")
-    .data(d3.range(2013, 2017))
+    .data(d3.range(2015, 2017))
   .enter().append("svg")
     .attr("width", calendar_width)
     .attr("height", calendar_height)

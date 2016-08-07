@@ -1,4 +1,4 @@
-import datetime, operator, sqlite3, sys
+import datetime, operator, os, sqlite3, sys
 
 db = sqlite3.connect("data.db")
 
@@ -32,7 +32,7 @@ def count_emojis(name):
     sorted_words = sorted(words.items(), key=operator.itemgetter(1))
     sorted_words.reverse()
 
-    output = file("emojis.csv", "w+")
+    output = file("emojis_%s.csv" % name, "w+")
     output.write("emoticon,instances\n")
 
     for word in sorted_words[:6]:
@@ -94,7 +94,7 @@ def generate_calendar(name):
         else:
             dates[date] += 1
 
-    output = file("dates.csv", "w+")
+    output = file("dates_%s.csv" % name, "w+")
     output.write("Date,Messages\n")
 
     for date in dates:
@@ -122,7 +122,7 @@ def generate_line_chart(name):
         if date not in dates:
             dates.append(date)
 
-    output = file("line.tsv", "w+")
+    output = file("line_%s.tsv" % name, "w+")
     output.write("date	messages\n")
 
     for date in dates:
@@ -134,5 +134,14 @@ def generate_data(name):
     count_emojis(name)
     generate_calendar(name)
     generate_line_chart(name)
+
+    template = file("result.html", "r")
+    template_contents = template.read()
+
+    new_result = file("%s.html" % name, "w+")
+    new_result.write(template_contents.replace(".tsv\"", "_%s.tsv\"" % name).replace(".csv\"", "_%s.csv\"" % name))
+
+    new_result.close()
+    template.close()
 
 generate_data(sys.argv[1])
