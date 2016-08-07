@@ -5,15 +5,17 @@ db = sqlite3.connect("data.db")
 def get_people():
     cur = db.cursor()
     cur.execute("select name from sqlite_master where type='table'")
-    return [row[0] for row in cur.fetchall()]
+    tables = [row[0] for row in cur.fetchall()]
+    tables.remove("messages")
+    return tables
 
 def get_messages(name):
     cur = db.cursor()
     cur.execute("select * from %s" % name)
     return cur.fetchall()
 
-def count_emojis(name):
-    ignored_words = [":)", ":P", ":D", "-_-", ":3", ";)", "D:", "<3", ":')", ":'(", ":("]
+def generate_emoticons(name):
+    emoticons = [":)", ":P", ":D", "-_-", ":3", ";)", "D:", "<3", ":')", ":'(", ":("]
 
     messages = get_messages(name)
     words = {}
@@ -22,8 +24,7 @@ def count_emojis(name):
         message_words = message[1].split(" ")
 
         for word in message_words:
-            if word not in ignored_words: continue
-
+            if word not in emoticons: continue
             if word not in words:
                 words[word] = 1
             else:
@@ -131,17 +132,7 @@ def generate_line_chart(name):
     output.close()
 
 def generate_data(name):
-    count_emojis(name)
+    generate_emoticons(name)
     generate_calendar(name)
-    generate_line_chart(name)
-
-    template = file("result.html", "r")
-    template_contents = template.read()
-
-    new_result = file("%s.html" % name, "w+")
-    new_result.write(template_contents.replace(".tsv\"", "_%s.tsv\"" % name).replace(".csv\"", "_%s.csv\"" % name))
-
-    new_result.close()
-    template.close()
 
 generate_data(sys.argv[1])

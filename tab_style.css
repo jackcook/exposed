@@ -1,0 +1,29 @@
+body {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.day {
+  fill: rgb(238, 238, 238);
+  stroke: #ccc;
+}
+
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.RdYlGn .q0-4{fill:rgb(214,230,133)}
+.RdYlGn .q1-4{fill:rgb(140,198,101)}
+.RdYlGn .q2-4{fill:rgb(67,163,64)}
+.RdYlGn .q3-4{fill:rgb(30,104,35)}
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}
