@@ -5,12 +5,8 @@
   </head>
 <body>
   <div id="names">
-    <div class="individual" class="top10">
-      <p style="text-decoration: underline">Top 10 Friends</p>
-    </div>
     {% for friend in friends %}
-    <div class="individual" onclick="update_tab('{{ friend.id }}')">
-      <img src="http://placehold.it/100" />
+    <div class="individual" onclick="update_tab(this, '{{ friend.id }}')">
       <div class="meta">
         <p class="name">{{ friend.name }}</p>
         <p class="score">{{ friend.score }}</p>
@@ -19,7 +15,7 @@
     {% endfor %}
   </div>
   <div id="main">
-    <iframe src="result.html"></iframe>
+    <iframe src="result.html" frameBorder="0"></iframe>
   </div>
   <script src="script.js" type="text/javascript"></script>
 </body>
