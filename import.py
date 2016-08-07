@@ -13,10 +13,22 @@ threads = soup.findAll("div", {"class": "thread"})
 
 for (i, thread) in enumerate(threads):
     names = str(thread).split(">")[1].split("<")[0].split(", ")
+
+    if len(names) > 2:
+        continue
+
+    name = (names[1] if names[0] == "Jack Cook" else names[0]).lower().replace(" ", "_")
+
+    if "@facebook.com" in name:
+        continue
+
     messages_data = thread.findAll("div", {"class": "message_header"})
     messages_text = thread.findAll("p")
 
-    c.execute("create table messages%d (id integer primary key, message text, sender text, time integer);" % i)
+    try:
+        c.execute("create table if not exists %s (id integer primary key, message text, sender text, time integer);" % name)
+    except:
+        continue
 
     for j in range(0, len(messages_data)):
         message = messages_text[j].text
@@ -26,7 +38,7 @@ for (i, thread) in enumerate(threads):
         time_obj = datetime.strptime(time_text, "%A, %B %d, %Y at %H:%M%p %Z")
         timestamp = int(time.mktime(time_obj.timetuple()))
 
-        c.execute("insert into messages%d (message, sender, time) values (?, ?, ?);" % i, (message, sender, timestamp))
+        c.execute("insert into %s (message, sender, time) values (?, ?, ?);" % name, (message, sender, timestamp))
 
 db.commit()
 db.close()
