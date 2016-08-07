@@ -139,7 +139,7 @@ def generate_num_messages(name):
     output.close()
 
 def generate_tone_analysis(name):
-    messages = [x[1] for x in get_messages(name)[:1000]]
+    messages = [x[1] for x in get_messages(name)[:2]]
     text = "\\n".join(messages)
 
     if len(text) == 0:
