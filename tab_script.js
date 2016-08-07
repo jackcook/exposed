@@ -42,7 +42,7 @@ function generate_calendar(name) {
         .attr("class", "month")
         .attr("d", monthPath);
 
-    d3.csv("dates_" + name + ".csv", function(error, csv) {
+    d3.csv("data/dates_" + name + ".csv", function(error, csv) {
         if (error) throw error;
 
         var data = d3.nest()
@@ -90,7 +90,7 @@ function generate_emoticons(name) {
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    d3.csv("emojis_" + name + ".csv", type, function(error, data) {
+    d3.csv("data/emojis_" + name + ".csv", type, function(error, data) {
         if (error) throw error;
 
         var g = svg.selectAll(".arc")
@@ -105,7 +105,7 @@ function generate_emoticons(name) {
         g.append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
             .attr("dy", ".35em")
-            .text(function(d) { return d.data.emoticon; });
+            .text(function(d) { return d.data.emoticon + " (" + d.data.instances + ")"; });
     });
 
     function type(d) {
@@ -136,7 +136,7 @@ function generate_first(name) {
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    d3.csv("first_" + name + ".csv", type, function(error, data) {
+    d3.csv("data/first_" + name + ".csv", type, function(error, data) {
         if (error) throw error;
 
         var g = svg.selectAll(".arc")
@@ -151,7 +151,10 @@ function generate_first(name) {
         g.append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
             .attr("dy", ".35em")
-            .text(function(d) { return d.data.person; });
+            .text(function(d) {
+              var firstName = d.data.person.split(" ")[0];
+              return firstName + " (" + d.data.instances + ")";
+            });
     });
 
     function type(d) {
@@ -160,7 +163,7 @@ function generate_first(name) {
     }
 }
 
-function generate_last(name) {
+function generate_messages(name) {
     var width = 240,
         height = 240,
         radius = Math.min(width, height) / 2;
@@ -182,7 +185,7 @@ function generate_last(name) {
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    d3.csv("first_" + name + ".csv", type, function(error, data) {
+    d3.csv("data/messages_" + name + ".csv", type, function(error, data) {
         if (error) throw error;
 
         var g = svg.selectAll(".arc")
@@ -197,7 +200,10 @@ function generate_last(name) {
         g.append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
             .attr("dy", ".35em")
-            .text(function(d) { return d.data.person; });
+            .text(function(d) {
+              var firstName = d.data.person.split(" ")[0];
+              return firstName + " (" + d.data.instances + ")";
+            });
     });
 
     function type(d) {
@@ -210,5 +216,5 @@ function generate_charts(name) {
   generate_calendar(name);
   generate_emoticons(name);
   generate_first(name);
-  generate_last(name);
+  generate_messages(name);
 }

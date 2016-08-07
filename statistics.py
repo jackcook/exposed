@@ -46,27 +46,13 @@ def generate_emoticons(name):
     sorted_words = sorted(words.items(), key=operator.itemgetter(1))
     sorted_words.reverse()
 
-    output = file("emojis_%s.csv" % name, "w+")
+    output = file("data/emojis_%s.csv" % name, "w+")
     output.write("emoticon,instances\n")
 
-    for word in sorted_words[:6]:
+    for word in sorted_words[:5]:
         output.write("%s,%d\n" % (word[0], word[1]))
 
     output.close()
-
-def count_messages(name):
-    messages = get_messages(name)
-    counts = {"Total": 0}
-
-    for message in messages:
-        if message[2] not in counts:
-            counts[message[2]] = 1
-        else:
-            counts[message[2]] += 1
-
-        counts["Total"] += 1
-
-    return counts
 
 def generate_conversations(name):
     messages = get_messages(name)
@@ -93,7 +79,7 @@ def generate_conversations(name):
         last_sender = message[2]
         last_time = message[3]
 
-    first_output = file("first_%s.csv" % name, "w+")
+    first_output = file("data/first_%s.csv" % name, "w+")
     first_output.write("person,instances\n")
 
     for name in first:
@@ -102,7 +88,7 @@ def generate_conversations(name):
 
     first_output.close()
 
-    last_output = file("last_%s.csv" % name, "w+")
+    last_output = file("data/last_%s.csv" % name, "w+")
     last_output.write("person,instances\n")
 
     for name in last:
@@ -124,7 +110,7 @@ def generate_calendar(name):
         else:
             dates[date] += 1
 
-    output = file("dates_%s.csv" % name, "w+")
+    output = file("data/dates_%s.csv" % name, "w+")
     output.write("Date,Messages\n")
 
     for date in dates:
@@ -132,31 +118,22 @@ def generate_calendar(name):
 
     output.close()
 
-def generate_line_chart(name):
+def generate_num_messages(name):
     messages = get_messages(name)
-    messages.reverse()
-
-    dates = []
-    messages_num = {}
-    total = 0
+    counts = {}
 
     for message in messages:
-        total += 1
-        date = datetime.datetime.fromtimestamp(int(message[3])).strftime("%Y-%m-%d")
-
-        if date not in messages_num:
-            messages_num[date] = total + 1
+        if message[2] not in counts:
+            counts[message[2]] = 1
         else:
-            messages_num[date] += 1
+            counts[message[2]] += 1
 
-        if date not in dates:
-            dates.append(date)
+    output = file("data/messages_%s.csv" % name, "w+")
+    output.write("person,instances\n")
 
-    output = file("line_%s.tsv" % name, "w+")
-    output.write("date	messages\n")
-
-    for date in dates:
-        output.write("%s	%d\n" % (date, messages_num[date]))
+    for name in counts:
+        line =  ("%s,%d\n" % (name, counts[name])).encode("utf-8")
+        output.write(line)
 
     output.close()
 
@@ -181,6 +158,7 @@ def generate_data():
         generate_emoticons(person[0])
         generate_calendar(person[0])
         generate_conversations(person[0])
+        generate_num_messages(person[0])
 
     generate_index()
 
