@@ -4,6 +4,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 <body>
+  <div id="header">
+    <h2>Messenger Analysis</h2>
+  </div>
   <div id="names">
     {% for friend in friends %}
     <div class="individual" onclick="update_tab(this, '{{ friend.id }}')">
