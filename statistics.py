@@ -1,4 +1,5 @@
 import datetime, operator, os, sqlite3, sys
+from jinja2 import Template
 
 db = sqlite3.connect("data.db")
 
@@ -7,7 +8,19 @@ def get_people():
     cur.execute("select name from sqlite_master where type='table'")
     tables = [row[0] for row in cur.fetchall()]
     tables.remove("messages")
-    return tables
+
+    people = []
+
+    for table in tables:
+        cur.execute("select Count(*) from %s" % table)
+        messages = cur.fetchall()[0][0]
+
+        people.append((table, messages))
+
+    people.sort(key=lambda tup: tup[1])
+    people.reverse()
+
+    return people
 
 def get_messages(name):
     cur = db.cursor()
@@ -131,8 +144,27 @@ def generate_line_chart(name):
 
     output.close()
 
-def generate_data(name):
-    generate_emoticons(name)
-    generate_calendar(name)
+def generate_index():
+    template_file = open("template.html", "r")
+    t = Template(template_file.read())
 
-generate_data(sys.argv[1])
+    friends = []
+
+    for person in get_people():
+        name = person[0].replace("_", " ").title()
+        friends.append({"id": person[0], "name": name, "score": "Messages: %d" % person[1]})
+
+    index_file = open("index.html", "w+")
+    index_file.write(t.render(friends=friends).encode("utf-8"))
+
+    index_file.close()
+    template_file.close()
+
+def generate_data():
+    for person in get_people():
+        generate_emoticons(person[0])
+        generate_calendar(person[0])
+
+    generate_index()
+
+generate_data()

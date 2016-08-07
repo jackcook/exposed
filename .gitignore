@@ -5,6 +5,3 @@
 *.htm
 *.csv
 *.tsv
-
-!index.html
-!result.html

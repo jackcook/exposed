@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel='stylesheet' href='style.css'>
+<title></title>
+</head>
+<body>
+  <div class='names'>
+    <div class='individual' style="background-color:#4775d1">
+      <div class='top10'>
+        <p style='text-decoration: underline'>Top 10 Friends</p>
+      </div>
+    </div>
+    {% for friend in friends %}
+    <div class='individual' onclick="update_tab('{{ friend.id }}')">
+      <img src="http://placehold.it/100" />
+      <div class="meta">
+        <p class="name">{{ friend.name }}</p>
+        <p class="score">{{ friend.score }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class='main'>
+    <iframe src="result.html"></iframe>
+  </div>
+  <script src="script.js" type="text/javascript"></script>
+</body>
+</html>
