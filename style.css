@@ -4,7 +4,7 @@
   font-family:Century Gothic;
 }
 
-div.names{
+#names {
   position: absolute;
   left: 0;
   width:30%;
@@ -12,7 +12,8 @@ div.names{
   overflow-x: hidden;
   overflow-y: scroll;
 }
-div.individual{
+
+.individual{
   padding: 10px;
   background-color:#8ccb58;
   width:100%;
@@ -20,24 +21,8 @@ div.individual{
   border: 1px solid black;
   cursor: pointer;
 }
-div.main{
-  position: absolute;
-  right: 0;
-  width:70%;
-  height:100%;
-}
-iframe {
-  width: 100%;
-  height: 100%;
-}
-div.top10{
-  float: left;
-  display: inline;
-  padding-top:18px;
-  padding-left:30%;
-}
 
-div.individual:nth-child(even){
+.individual:nth-child(even){
   background-color:#fae8ec;
 }
 
@@ -49,6 +34,26 @@ div.individual:nth-child(even){
   width: 40px;
   border-radius:50%;
   margin-left:30px;
+}
+
+#main {
+  position: absolute;
+  right: 0;
+  width:70%;
+  height:100%;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.top10 {
+  background-color: #4775d1;
+  float: left;
+  display: inline;
+  padding-top:18px;
+  padding-left:30%;
 }
 
 .meta {
