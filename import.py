@@ -19,7 +19,7 @@ owner_name = soup.title.text.replace(" - Messages", "")
 for (i, thread) in enumerate(threads):
     names = str(thread).split(">")[1].split("<")[0].split(", ")
 
-    if len(names) > 2:
+    if len(names) > 2 or owner_name not in names:
         continue
 
     name = (names[1] if names[0] == owner_name else names[0]).lower().replace(" ", "_")

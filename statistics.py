@@ -68,7 +68,7 @@ def count_messages(name):
 
     return counts
 
-def count_conversations(name):
+def generate_conversations(name):
     messages = get_messages(name)
     messages.reverse()
 
@@ -93,7 +93,23 @@ def count_conversations(name):
         last_sender = message[2]
         last_time = message[3]
 
-    return (first, last)
+    first_output = file("first_%s.csv" % name, "w+")
+    first_output.write("person,instances\n")
+
+    for name in first:
+        line =  ("%s,%d\n" % (name, first[name])).encode("utf-8")
+        first_output.write(line)
+
+    first_output.close()
+
+    last_output = file("last_%s.csv" % name, "w+")
+    last_output.write("person,instances\n")
+
+    for name in last:
+        line =  ("%s,%d\n" % (name, last[name])).encode("utf-8")
+        last_output.write(line)
+
+    last_output.close()
 
 def generate_calendar(name):
     messages = get_messages(name)
@@ -164,6 +180,7 @@ def generate_data():
     for person in get_people():
         generate_emoticons(person[0])
         generate_calendar(person[0])
+        generate_conversations(person[0])
 
     generate_index()
 

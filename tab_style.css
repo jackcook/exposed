@@ -3,6 +3,21 @@ body {
   shape-rendering: crispEdges;
 }
 
+#content {
+  width: 760px;
+  margin: 80px auto 0;
+}
+
+#graph_1, #graph_2, #graph_3 {
+  width: 33%;
+  height: 240px;
+  display: inline-block;
+}
+
+h1 {
+  text-align: center;
+}
+
 .day {
   fill: rgb(238, 238, 238);
   stroke: #ccc;

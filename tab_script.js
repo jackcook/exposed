@@ -1,7 +1,7 @@
 function generate_calendar(name) {
-    var width = 772,
+    var width = 760,
         height = 136,
-        cellSize = 14;
+        cellSize = 13;
 
     var format = d3.time.format("%Y-%m-%d");
 
@@ -9,7 +9,7 @@ function generate_calendar(name) {
         .domain([0, 733])
         .range(d3.range(4).map(function(d) { return "q" + d + "-4"; }));
 
-    var svg = d3.select("body").selectAll("svg")
+    var svg = d3.select("#content").selectAll("svg")
         .data(d3.range(2015, 2017))
         .enter().append("svg")
         .attr("width", width)
@@ -69,8 +69,8 @@ function generate_calendar(name) {
 }
 
 function generate_emoticons(name) {
-    var width = 900,
-        height = 300,
+    var width = 240,
+        height = 240,
         radius = Math.min(width, height) / 2;
 
     var color = d3.scale.ordinal()
@@ -84,7 +84,7 @@ function generate_emoticons(name) {
         .sort(null)
         .value(function(d) { return d.instances; });
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#graph_1").append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
@@ -114,7 +114,101 @@ function generate_emoticons(name) {
     }
 }
 
+function generate_first(name) {
+    var width = 240,
+        height = 240,
+        radius = Math.min(width, height) / 2;
+
+    var color = d3.scale.ordinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    var arc = d3.svg.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(radius - 70);
+
+    var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) { return d.instances; });
+
+    var svg = d3.select("#graph_2").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    d3.csv("first_" + name + ".csv", type, function(error, data) {
+        if (error) throw error;
+
+        var g = svg.selectAll(".arc")
+            .data(pie(data))
+            .enter().append("g")
+            .attr("class", "arc");
+
+        g.append("path")
+            .attr("d", arc)
+            .style("fill", function(d) { return color(d.data.person); });
+
+        g.append("text")
+            .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+            .attr("dy", ".35em")
+            .text(function(d) { return d.data.person; });
+    });
+
+    function type(d) {
+        d.instances = +d.instances;
+        return d;
+    }
+}
+
+function generate_last(name) {
+    var width = 240,
+        height = 240,
+        radius = Math.min(width, height) / 2;
+
+    var color = d3.scale.ordinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    var arc = d3.svg.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(radius - 70);
+
+    var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) { return d.instances; });
+
+    var svg = d3.select("#graph_3").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    d3.csv("first_" + name + ".csv", type, function(error, data) {
+        if (error) throw error;
+
+        var g = svg.selectAll(".arc")
+            .data(pie(data))
+            .enter().append("g")
+            .attr("class", "arc");
+
+        g.append("path")
+            .attr("d", arc)
+            .style("fill", function(d) { return color(d.data.person); });
+
+        g.append("text")
+            .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+            .attr("dy", ".35em")
+            .text(function(d) { return d.data.person; });
+    });
+
+    function type(d) {
+        d.instances = +d.instances;
+        return d;
+    }
+}
+
 function generate_charts(name) {
   generate_calendar(name);
   generate_emoticons(name);
+  generate_first(name);
+  generate_last(name);
 }
