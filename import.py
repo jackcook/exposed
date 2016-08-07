@@ -14,13 +14,15 @@ soup = BeautifulSoup(import_file.read(), "html.parser")
 threads = soup.findAll("div", {"class": "thread"})
 threads.reverse()
 
+owner_name = soup.title.text.replace(" - Messages", "")
+
 for (i, thread) in enumerate(threads):
     names = str(thread).split(">")[1].split("<")[0].split(", ")
 
     if len(names) > 2:
         continue
 
-    name = (names[1] if names[0] == "Jack Cook" else names[0]).lower().replace(" ", "_")
+    name = (names[1] if names[0] == owner_name else names[0]).lower().replace(" ", "_")
 
     if "@facebook.com" in name:
         continue
