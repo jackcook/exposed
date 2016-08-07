@@ -32,7 +32,13 @@ def count_emojis(name):
     sorted_words = sorted(words.items(), key=operator.itemgetter(1))
     sorted_words.reverse()
 
-    return sorted_words[:10]
+    output = file("emojis.csv", "w+")
+    output.write("emoticon,instances\n")
+
+    for word in sorted_words[:6]:
+        output.write("%s,%d\n" % (word[0], word[1]))
+
+    output.close()
 
 def count_messages(name):
     messages = get_messages(name)
@@ -124,4 +130,9 @@ def generate_line_chart(name):
 
     output.close()
 
-generate_calendar(sys.argv[1])
+def generate_data(name):
+    count_emojis(name)
+    generate_calendar(name)
+    generate_line_chart(name)
+
+generate_data(sys.argv[1])
