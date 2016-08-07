@@ -1,5 +1,6 @@
-import datetime, operator, os, sqlite3, sys
+import datetime, json, operator, os, sqlite3, sys
 from jinja2 import Template
+from watson_developer_cloud import ToneAnalyzerV3
 
 db = sqlite3.connect("data.db")
 
@@ -137,6 +138,33 @@ def generate_num_messages(name):
 
     output.close()
 
+def generate_tone_analysis(name):
+    messages = [x[1] for x in get_messages(name)[:1000]]
+    text = "\\n".join(messages)
+
+    if len(text) == 0:
+        return
+
+    tone_analyzer = ToneAnalyzerV3(
+        username="7a17b130-2a81-4051-bc1b-1e60a4eaf6d4",
+        password="ScqXXSJEslrP",
+        version="2016-05-19"
+    )
+
+    data = {"name": "document", "children": []}
+
+    for category in tone_analyzer.tone(text=text)["document_tone"]["tone_categories"]:
+        category_obj = {"name": category["category_id"], "children": []}
+
+        for tone in category["tones"]:
+            category_obj["children"].append({"name": tone["tone_name"], "size": tone["score"] * 100})
+
+        data["children"].append(category_obj)
+
+    output = file("data/tone_%s.json" % name, "w+")
+    output.write(json.dumps(data))
+    output.close()
+
 def generate_index():
     template_file = open("template.html", "r")
     t = Template(template_file.read())
@@ -159,6 +187,7 @@ def generate_data():
         generate_calendar(person[0])
         generate_conversations(person[0])
         generate_num_messages(person[0])
+        generate_tone_analysis(person[0])
 
     generate_index()
 
