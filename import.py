@@ -6,10 +6,13 @@ import time
 db = sqlite3.connect("data.db")
 c = db.cursor()
 
+c.execute("create table if not exists messages (id integer primary key, message text, sender text, time integer);")
+
 import_file = open("messages.htm", "r")
 
 soup = BeautifulSoup(import_file.read(), "html.parser")
 threads = soup.findAll("div", {"class": "thread"})
+threads.reverse()
 
 for (i, thread) in enumerate(threads):
     names = str(thread).split(">")[1].split("<")[0].split(", ")
@@ -35,10 +38,11 @@ for (i, thread) in enumerate(threads):
         sender = messages_data[j].findAll("span", {"class": "user"})[0].text
 
         time_text = messages_data[j].findAll("span", {"class": "meta"})[0].text
-        time_obj = datetime.strptime(time_text, "%A, %B %d, %Y at %H:%M%p %Z")
+        time_obj = datetime.strptime(time_text, "%A, %B %d, %Y at %I:%M%p %Z")
         timestamp = int(time.mktime(time_obj.timetuple()))
 
         c.execute("insert into %s (message, sender, time) values (?, ?, ?);" % name, (message, sender, timestamp))
+        c.execute("insert into messages (message, sender, time) values (?, ?, ?);", (message, sender, timestamp))
 
 db.commit()
 db.close()
