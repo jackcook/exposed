@@ -1,10 +1,11 @@
-import argparse, sqlite3, time
+import argparse, os, sqlite3, time
 from bs4 import BeautifulSoup
 from datetime import datetime
-import sqlite3
-import time
 
 def import_messages(filename):
+    if os.path.isfile("data.db"):
+        os.remove("data.db")
+
     db = sqlite3.connect("data.db")
     c = db.cursor()
 

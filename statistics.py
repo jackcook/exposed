@@ -1,4 +1,4 @@
-import argparse, datetime, operator, os, sqlite3
+import argparse, datetime, operator, os, shutil, sqlite3
 from jinja2 import Template
 
 db = None
@@ -153,7 +153,24 @@ def generate_index():
     index_file.close()
     template_file.close()
 
-def generate_data():
+def generate_data(database):
+    global db
+
+    if os.path.isfile(database):
+        try:
+            db = sqlite3.connect(database)
+        except:
+            print "Database %s is corrupt or not a valid database" % database
+            sys.exit(0)
+
+        if os.path.isdir("data"):
+            shutil.rmtree("data")
+
+        os.makedirs("data")
+    else:
+        print "Database %s could not be found" % database
+        sys.exit(0)
+
     for person in get_people():
         print "Generating statistics for %s..." % person[0]
 
@@ -174,17 +191,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     database = "data.db" if args.database == None else args.database
-
-    if os.path.isfile(database):
-        try:
-            db = sqlite3.connect(database)
-        except:
-            print "Database %s is corrupt or not a valid database" % database
-            sys.exit(0)
-
-        if not os.path.isdir("data"):
-            os.makedirs("data")
-
-        generate_data()
-    else:
-        print "Database %s could not be found" % database
+    generate_data(database)
