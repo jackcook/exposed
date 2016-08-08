@@ -1,6 +1,5 @@
-import argparse, os, sqlite3, time
+import argparse, datetime, os, sqlite3, time
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 def import_messages(filename):
     if os.path.isfile("data.db"):
@@ -48,7 +47,7 @@ def import_messages(filename):
             sender = messages_data[j].findAll("span", {"class": "user"})[0].text
 
             time_text = messages_data[j].findAll("span", {"class": "meta"})[0].text
-            time_obj = datetime.strptime(time_text, "%A, %B %d, %Y at %I:%M%p %Z")
+            time_obj = datetime.datetime.strptime(time_text, "%A, %B %d, %Y at %I:%M%p %Z")
             timestamp = int(time.mktime(time_obj.timetuple()))
 
             c.execute("insert into %s (message, sender, time) values (?, ?, ?);" % name, (message, sender, timestamp))
