@@ -1,10 +1,7 @@
-import datetime, operator, os, sqlite3
+import argparse, datetime, operator, os, sqlite3
 from jinja2 import Template
 
-db = sqlite3.connect("data.db")
-
-if not os.path.isdir("data"):
-    os.makedirs("data")
+db = None
 
 def get_people():
     cur = db.cursor()
@@ -158,11 +155,36 @@ def generate_index():
 
 def generate_data():
     for person in get_people():
+        print "Generating statistics for %s..." % person[0]
+
         generate_emoticons(person[0])
         generate_calendar(person[0])
         generate_conversations(person[0])
         generate_num_messages(person[0])
 
+    print "Generating index.html file..."
+
     generate_index()
 
-generate_data()
+    print "Finished generating statistics"
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--database")
+    args = parser.parse_args()
+
+    database = "data.db" if args.database == None else args.database
+
+    if os.path.isfile(database):
+        try:
+            db = sqlite3.connect(database)
+        except:
+            print "Database %s is corrupt or not a valid database" % database
+            sys.exit(0)
+
+        if not os.path.isdir("data"):
+            os.makedirs("data")
+
+        generate_data()
+    else:
+        print "Database %s could not be found" % database
